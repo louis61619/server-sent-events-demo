@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button id="btn">click to use SSE</button>
+    <button id="btn1">click to get client</button>
+    <script>
+      const btn = document.querySelector("#btn");
+      const btn1 = document.querySelector("#btn1");
+
+      const data = {
+        aaa: "jfoijfowjfwio",
+      };
+
+      btn.addEventListener("click", () => {
+        console.log("發送請求");
+        fetch("http://localhost:3000/fact", {
+          body: JSON.stringify(data), // must match 'Content-Type' header
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, same-origin, *omit
+          headers: {
+            "user-agent": "Mozilla/4.0 MDN Example",
+            "content-type": "application/json",
+          },
+          method: "POST", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, cors, *same-origin
+          redirect: "follow", // manual, *follow, error
+          referrer: "no-referrer", // *client, no-referrer
+        });
+      });
+
+      btn1.addEventListener("click", () => {
+        fetch("http://localhost:3000/status")
+          .then((res) => res.text())
+          .then((res) => {
+            console.log(res);
+          });
+      });
+
+      // 獲取事件隊列
+      const events = new EventSource("http://localhost:3000/events");
+
+      events.onmessage = (event) => {
+        const parsedData = JSON.parse(event.data);
+
+        console.log(parsedData);
+
+        // setFacts((facts) => facts.concat(parsedData));
+      };
+
+      // setListening(true);
+    </script>
+  </body>
+</html>
